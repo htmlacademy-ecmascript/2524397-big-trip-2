@@ -3,13 +3,16 @@ import RouteInfo from './view/route-info-view.js';
 import Filter from './view/filter-view.js';
 import Sort from './view/sort-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
+import PointsModel from './model/points-model.js';
 
 
 const tripMain = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
 const sortContainer = document.querySelector('.trip-events');
 const tripEventsContainer = document.querySelector('.trip-events');
-const tripPresenter = new TripPresenter({container: tripEventsContainer});
+const pointsModel = new PointsModel();
+const tripPresenter = new TripPresenter({container: tripEventsContainer, pointsModel});
+
 
 render(new RouteInfo(), tripMain, RenderPosition.AFTERBEGIN);
 render(new Filter(), filterContainer);
