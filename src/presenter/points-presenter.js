@@ -16,7 +16,7 @@ export default class PointsPresenter {
     this.offers = [...this.pointsModel.getOffers()];
     this.destintations = this.pointsModel.getDestintations();
 
-    render(new NewPointView(this.offers), this.routePointList.getElement(), RenderPosition.AFTERBEGIN);
+    render(new NewPointView(this.boardPoints[0], this.offers), this.routePointList.getElement(), RenderPosition.AFTERBEGIN);
     render(this.routePointList, this.container);
 
     for (let i = 0; i < this.boardPoints.length; i++){
