@@ -3,6 +3,17 @@ import PointsView from '../view/points-view.js';
 import PointView from '../view/point-view.js';
 import NewPointView from '../view/new-point-view.js';
 
+const defaultPoint = {
+  'id': 'f4b62099-293f-4c3d-a702-94eec4a2808c0',
+  'basePrice': 0,
+  'dateFrom': '2019-07-10T22:55:56.845Z',
+  'dateTo': '2019-07-11T11:22:13.375Z',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight'
+};
+
 export default class PointsPresenter {
   routePointList = new PointsView();
 
@@ -16,7 +27,7 @@ export default class PointsPresenter {
     this.offers = [...this.pointsModel.getOffers()];
     this.destintations = this.pointsModel.getDestintations();
 
-    render(new NewPointView(this.boardPoints[0], this.offers), this.routePointList.getElement(), RenderPosition.AFTERBEGIN);
+    render(new NewPointView(defaultPoint, this.offers, this.destintations), this.routePointList.getElement(), RenderPosition.AFTERBEGIN);
     render(this.routePointList, this.container);
 
     for (let i = 0; i < this.boardPoints.length; i++){

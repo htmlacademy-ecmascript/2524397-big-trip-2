@@ -1,4 +1,5 @@
 import { createElement } from '../render.js';
+import { getRandomArrayElement } from '../utils.js';
 
 function createCheckedOffersTemplate(checkedOffers){
 
@@ -46,20 +47,30 @@ function createOtherOffersTemplate(point, allOffers){
 
 }
 
-function createNewPointForm(point, allOffers) {
+function createDestinationPhotoTemplate({ pictures = [] }){
+
+  if (!pictures || pictures.length === 0) {
+    return '';
+  }
+
+  let destinationPhotoTemplate = '';
+
+  for (let i = 0; i < pictures.length; i++){
+    destinationPhotoTemplate += `<img class="event__photo" src=${pictures[i].src} alt="${pictures[i].description}">`;
+  }
+
+  return destinationPhotoTemplate;
+
+}
+
+function createNewPointForm(point, allOffers, destinations) {
   const {type, offers: selectedOfferIds} = point;
   const currentTypeOffers = allOffers.find((offer) => offer.type === type);
   const checkedOffers = currentTypeOffers.offers.filter((offer) => selectedOfferIds.includes(offer.id));
   const checkedOffersTemplate = createCheckedOffersTemplate(checkedOffers);
   const otherOffersTemplate = createOtherOffersTemplate(point, allOffers);
-
-  if (!point) {
-    point = {
-      type: 'flight',
-      offers: [],
-      destination: 'Geneva'
-    };
-  }
+  const destination = getRandomArrayElement(destinations);
+  const destinationPhoto = createDestinationPhotoTemplate(destination);
 
   return (`
     <form class="event event--edit" action="#" method="post">
@@ -127,7 +138,7 @@ function createNewPointForm(point, allOffers) {
           <label class="event__label  event__type-output" for="event-destination-1">
             Flight
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
             <option value="Amsterdam"></option>
             <option value="Geneva"></option>
@@ -148,7 +159,7 @@ function createNewPointForm(point, allOffers) {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${point.basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -169,15 +180,11 @@ function createNewPointForm(point, allOffers) {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+          <p class="event__destination-description">${destination.description}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+              ${destinationPhoto}
             </div>
           </div>
         </section>
@@ -187,13 +194,14 @@ function createNewPointForm(point, allOffers) {
 }
 
 export default class NewPointView {
-  constructor (points, offers) {
+  constructor (points, offers, destinations) {
     this.point = points;
     this.offers = offers;
+    this.destinations = destinations;
   }
 
   getTemplate() {
-    return createNewPointForm(this.point, this.offers);
+    return createNewPointForm(this.point, this.offers, this.destinations);
   }
 
   getElement(){
